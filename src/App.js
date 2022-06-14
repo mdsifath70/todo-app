@@ -14,6 +14,7 @@ function App() {
     const [text, setText] = useState('');
     const [isUpdating, setIsUpdating] = useState('');
 
+    // Get Todos
     useEffect(() => {
         axios
             .get(API_URL + '/get-todo')
@@ -21,29 +22,37 @@ function App() {
             .catch((err) => console.log(err));
     }, [todo]);
 
-    const notify = (message) =>
-        toast.success(message, {
-            closeOnClick: false,
-        });
+    // Toaster
+    const toastifyUpdate = (res) => {
+        return {
+            render: res.data.message,
+            type: 'success',
+            isLoading: false,
+            autoClose: true,
+            closeButton: true,
+        };
+    };
 
     const formSubmitHandle = (e) => {
         e.preventDefault();
 
         setText('');
         if (isUpdating) {
+            const loading = toast.loading('Please wait...');
             axios
                 .post(API_URL + '/update-todo', {
                     _id: isUpdating,
                     text,
                 })
-                .then((res) => notify(res.data.message))
+                .then((res) => toast.update(loading, toastifyUpdate(res)))
                 .catch((err) => console.log(err));
 
             setIsUpdating('');
         } else {
+            const loading = toast.loading('Please wait...');
             axios
                 .post(API_URL + '/save-todo', { text })
-                .then((res) => notify(res.data.message))
+                .then((res) => toast.update(loading, toastifyUpdate(res)))
                 .catch((err) => console.log(err));
         }
     };
@@ -54,9 +63,10 @@ function App() {
     };
 
     const deleteTodo = (id) => {
+        const loading = toast.loading('Please wait...');
         axios
-            .post(API_URL + '/delete-todo', { id })
-            .then((res) => notify(res.data.message))
+            .post(API_URL + '/delete-todo', { _id: id })
+            .then((res) => toast.update(loading, toastifyUpdate(res)))
             .catch((err) => console.log(err));
     };
 
@@ -79,16 +89,20 @@ function App() {
                         />
                     </form>
                     <div className="todo__items-container">
-                        {todo.map((item) => (
-                            <TodoItem
-                                key={item._id}
-                                text={item.text}
-                                updateTodo={() =>
-                                    updateTodo(item._id, item.text)
-                                }
-                                deleteTodo={() => deleteTodo(item._id)}
-                            />
-                        ))}
+                        {todo.length > 0 ? (
+                            todo.map((item) => (
+                                <TodoItem
+                                    key={item._id}
+                                    text={item.text}
+                                    updateTodo={() =>
+                                        updateTodo(item._id, item.text)
+                                    }
+                                    deleteTodo={() => deleteTodo(item._id)}
+                                />
+                            ))
+                        ) : (
+                            <h3 style={{ marginTop: '1rem' }}>Loading...</h3>
+                        )}
                     </div>
                 </div>
             </div>
