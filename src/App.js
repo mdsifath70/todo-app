@@ -38,7 +38,7 @@ function App() {
 
         setText('');
         if (isUpdating) {
-            const loading = toast.loading('Please wait...');
+            const loading = toast.loading('Updating Todo...');
             axios
                 .post(API_URL + '/update-todo', {
                     _id: isUpdating,
@@ -49,11 +49,15 @@ function App() {
 
             setIsUpdating('');
         } else {
-            const loading = toast.loading('Please wait...');
-            axios
-                .post(API_URL + '/save-todo', { text })
-                .then((res) => toast.update(loading, toastifyUpdate(res)))
-                .catch((err) => console.log(err));
+            if (text) {
+                const loading = toast.loading('Saving new Todo...');
+                axios
+                    .post(API_URL + '/save-todo', { text })
+                    .then((res) => toast.update(loading, toastifyUpdate(res)))
+                    .catch((err) => console.log(err));
+            } else {
+                toast.error('Please write some text');
+            }
         }
     };
 
@@ -63,7 +67,7 @@ function App() {
     };
 
     const deleteTodo = (id) => {
-        const loading = toast.loading('Please wait...');
+        const loading = toast.loading('Deleting Todo...');
         axios
             .post(API_URL + '/delete-todo', { _id: id })
             .then((res) => toast.update(loading, toastifyUpdate(res)))
