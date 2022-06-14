@@ -1,0 +1,81 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f8ff;
+}
+
+/* Layouts */
+.container {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Reusable */
+.section__title {
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+/* Todo */
+.todo__container {
+    background-color: #fff;
+    padding: 2rem;
+    margin-top: 5vmin;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: 0.75rem;
+}
+
+.input__form {
+    display: flex;
+}
+
+.input__form input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 0.8rem 0;
+    font-size: 1rem;
+}
+
+.input__form input[type='text'] {
+    flex: 1;
+    border-bottom: 1px solid #222;
+}
+
+.input__form input[type='submit'] {
+    background-color: #222;
+    color: #fff;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    cursor: pointer;
+}
+
+.todo__item {
+    background-color: #222;
+    color: #fff;
+    margin-top: 1.5rem;
+    border-radius: 3px;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.todo__item button {
+    background-color: transparent;
+    color: #fff;
+    font-size: 1.25rem;
+    display: inline-flex;
+    padding: 0;
+    margin-left: 1rem;
+    border: none;
+    outline: none;
+    line-height: 1;
+    vertical-align: middle;
+    cursor: pointer;
+}
