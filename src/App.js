@@ -13,14 +13,20 @@ function App() {
     const [todo, setTodo] = useState([]);
     const [text, setText] = useState('');
     const [isUpdating, setIsUpdating] = useState('');
+    const [networkErr, setNetworkErr] = useState(false);
 
     // Get Todos
     useEffect(() => {
         axios
             .get(API_URL + '/get-todo')
             .then((res) => setTodo(res.data))
-            .catch((err) => console.log(err));
-    }, [todo]);
+            .catch((err) => {
+                console.log(err);
+                if (err.message === 'Network Error') {
+                    setNetworkErr(true);
+                }
+            });
+    }, []);
 
     // Toaster
     const toastifyUpdate = (res) => {
@@ -44,16 +50,21 @@ function App() {
                     _id: isUpdating,
                     text,
                 })
-                .then((res) => toast.update(loading, toastifyUpdate(res)))
+                .then((res) => {
+                    setTodo(res.data.todo);
+                    setIsUpdating('');
+                    toast.update(loading, toastifyUpdate(res));
+                })
                 .catch((err) => console.log(err));
-
-            setIsUpdating('');
         } else {
             if (text) {
                 const loading = toast.loading('Saving new Todo...');
                 axios
                     .post(API_URL + '/save-todo', { text })
-                    .then((res) => toast.update(loading, toastifyUpdate(res)))
+                    .then((res) => {
+                        setTodo((prevState) => [...prevState, res.data.todo]);
+                        toast.update(loading, toastifyUpdate(res));
+                    })
                     .catch((err) => console.log(err));
             } else {
                 toast.error('Please write some text');
@@ -70,7 +81,10 @@ function App() {
         const loading = toast.loading('Deleting Todo...');
         axios
             .post(API_URL + '/delete-todo', { _id: id })
-            .then((res) => toast.update(loading, toastifyUpdate(res)))
+            .then((res) => {
+                setTodo(res.data.todo);
+                toast.update(loading, toastifyUpdate(res));
+            })
             .catch((err) => console.log(err));
     };
 
@@ -105,7 +119,11 @@ function App() {
                                 />
                             ))
                         ) : (
-                            <h3 style={{ marginTop: '1rem' }}>Loading...</h3>
+                            <h3 style={{ marginTop: '1rem', fontWeight: 500 }}>
+                                {networkErr
+                                    ? 'Backend server error!'
+                                    : 'Loading...'}
+                            </h3>
                         )}
                     </div>
                 </div>
