@@ -6,8 +6,7 @@ import TodoItem from './components/TodoItem';
 import './styles/app.css';
 import './styles/reset.css';
 
-const API_URL = 'https://todo-app-sifath.herokuapp.com';
-// const API_URL = 'http://localhost:8080';
+const API_URL = process.env.REACT_APP_API_URL;
 
 function App() {
     const [todo, setTodo] = useState([]);
