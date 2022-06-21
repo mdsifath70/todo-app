@@ -6,19 +6,24 @@ import TodoItem from './components/TodoItem';
 import './styles/app.css';
 import './styles/reset.css';
 
+// Api url
 const API_URL = process.env.REACT_APP_API_URL;
 
 function App() {
     const [todo, setTodo] = useState([]);
     const [text, setText] = useState('');
     const [isUpdating, setIsUpdating] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [networkErr, setNetworkErr] = useState(false);
 
     // Get Todos
     useEffect(() => {
         axios
             .get(API_URL + '/get-todo')
-            .then((res) => setTodo(res.data))
+            .then((res) => {
+                setTodo(res.data);
+                setIsLoading(false);
+            })
             .catch((err) => {
                 console.log(err);
                 if (err.message === 'Network Error') {
@@ -106,7 +111,25 @@ function App() {
                         />
                     </form>
                     <div className="todo__items-container">
-                        {todo.length > 0 ? (
+                        {networkErr ? (
+                            <h3
+                                style={{
+                                    marginTop: '1rem',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                Check your internet connection and try again.
+                            </h3>
+                        ) : isLoading ? (
+                            <h3
+                                style={{
+                                    marginTop: '1rem',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                Loading...
+                            </h3>
+                        ) : todo.length ? (
                             todo.map((item) => (
                                 <TodoItem
                                     key={item._id}
@@ -118,10 +141,13 @@ function App() {
                                 />
                             ))
                         ) : (
-                            <h3 style={{ marginTop: '1rem', fontWeight: 500 }}>
-                                {networkErr
-                                    ? 'Backend server error!'
-                                    : 'Loading...'}
+                            <h3
+                                style={{
+                                    marginTop: '1rem',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                No data found! Please create new data to see.
                             </h3>
                         )}
                     </div>
